@@ -1,6 +1,6 @@
 # dataset settings
 dataset_type = 'Cifar100Dataset'
-data_root = 'datasets/cifar100'
+data_root = 'D:/datasets/cifar'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 crop_size = (64, 64)
@@ -37,18 +37,21 @@ data = dict(
     train=dict(
         type=dataset_type,
         data_root=data_root,
-        img_dir='images/training',
+        img_dir='cifar100/train',
         ann_dir='annotations/training',
         pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
         data_root=data_root,
-        img_dir='images/validation',
+        img_dir='cifar100/test',
         ann_dir='annotations/validation',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
         data_root=data_root,
-        img_dir='images/validation',
-        ann_dir='annotations/validation',
+        img_dir='cifar100/test',
+        ann_dir='annotations/test',
         pipeline=test_pipeline))
+
+
+

@@ -4,7 +4,7 @@
 # Licensed under The MIT License [see LICENSE for details]
 # --------------------------------------------------------
 _base_ = [
-    '../_base_/models/upernet_r50.py', '../_base_/datasets/ade20k.py',
+    '../_base_/models/upernet_r50.py', '../_base_/datasets/cifar100.py',
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_160k.py'
 ]
 pretrained = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth'

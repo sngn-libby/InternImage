@@ -24,6 +24,8 @@ from mmseg.models import build_segmentor
 import mmcv_custom   # noqa: F401,F403
 import mmseg_custom   # noqa: F401,F403
 
+from datasets import Cifar100Dataset
+
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -176,6 +178,7 @@ def main():
 
     # build the dataloader
     # TODO: support multiple images per gpu (only minor changes are needed)
+    print(":: DEBUG :: Test dataset: ", cfg.data.test)
     dataset = build_dataset(cfg.data.test)
     data_loader = build_dataloader(
         dataset,
@@ -203,6 +206,7 @@ def main():
     else:
         print('"CLASSES" not found in meta, use dataset.CLASSES instead')
         model.CLASSES = dataset.CLASSES
+        # print(f":: DEBUG :: dataset - {dataset} {dataset.CLASSES}")
     if 'PALETTE' in checkpoint.get('meta', {}):
         model.PALETTE = checkpoint['meta']['PALETTE']
     else:
@@ -238,6 +242,7 @@ def main():
         tmpdir = None
 
     if not distributed:
+        # print(f":: DEBUG :: {eval_kwargs}")
         model = MMDataParallel(model, device_ids=[0])
         results = single_gpu_test(
             model,
@@ -263,6 +268,8 @@ def main():
             pre_eval=args.eval is not None and not eval_on_format_results,
             format_only=args.format_only or eval_on_format_results,
             format_args=eval_kwargs)
+
+    print(f":: Log :: Results ***\n{results}\n")
 
     rank, _ = get_dist_info()
     if rank == 0:
