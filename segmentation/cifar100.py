@@ -29,14 +29,16 @@ def save_img(filename, img, sub_dir="train"):
 
 if __name__ == "__main__":
     pickle_root_dir = "D:/datasets/cifar100_python"
+
     train_data_dict = unpickle(os.path.join(pickle_root_dir, "train"))
     test_data_dict = unpickle(os.path.join(pickle_root_dir, "test"))
 
     root_dir = "D:/datasets/cifar/cifar100"
     train_dir = os.path.join(root_dir, "train")
     test_dir = os.path.join(root_dir, "test")
-    if os.path.exists(train_dir) or os.path.exists(test_dir):
+    if os.path.exists(train_dir):
         shutil.rmtree(train_dir)
+    if os.path.exists(test_dir):
         shutil.rmtree(test_dir)
     os.makedirs(train_dir, mode=777, exist_ok=True)
     os.makedirs(test_dir, mode=777, exist_ok=True)

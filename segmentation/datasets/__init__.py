@@ -26,7 +26,6 @@ class Cifar100Dataset(CustomDataset):
     with open("D:/datasets/cifar/cifar100/classes.txt", "r") as f:
         lines = f.readlines()
     CLASSES = [line.strip() for line in lines]
-    # print(f":: Log :: CLASSES - {CLASSES}")
     PALETTE = build_palette(len(CLASSES))
 
     def __init__(self, split=None, **kwargs):

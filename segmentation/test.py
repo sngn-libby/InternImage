@@ -178,7 +178,6 @@ def main():
 
     # build the dataloader
     # TODO: support multiple images per gpu (only minor changes are needed)
-    print(":: DEBUG :: Test dataset: ", cfg.data.test)
     dataset = build_dataset(cfg.data.test)
     data_loader = build_dataloader(
         dataset,
@@ -242,7 +241,6 @@ def main():
         tmpdir = None
 
     if not distributed:
-        # print(f":: DEBUG :: {eval_kwargs}")
         model = MMDataParallel(model, device_ids=[0])
         results = single_gpu_test(
             model,
@@ -269,7 +267,7 @@ def main():
             format_only=args.format_only or eval_on_format_results,
             format_args=eval_kwargs)
 
-    print(f":: Log :: Results ***\n{results}\n")
+    print(f":: Log :: Results *** {results}\n")
 
     rank, _ = get_dist_info()
     if rank == 0:
