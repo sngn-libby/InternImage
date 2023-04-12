@@ -1,9 +1,9 @@
 # dataset settings
 dataset_type = 'Cifar100Dataset'
-data_root = 'D:/datasets/cifar'
+data_root = 'D:/datasets/cifar/'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
-crop_size = (64, 64)
+crop_size = (256, 256)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', reduce_zero_label=True),
@@ -20,7 +20,7 @@ test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(2048, 512),
+        img_scale=(512, 512),
         # img_ratios=[0.5, 0.75, 1.0, 1.25, 1.5, 1.75],
         flip=False,
         transforms=[
@@ -32,25 +32,31 @@ test_pipeline = [
         ])
 ]
 data = dict(
-    samples_per_gpu=4,
-    workers_per_gpu=4,
+    samples_per_gpu=2,
+    workers_per_gpu=2,
     train=dict(
         type=dataset_type,
         data_root=data_root,
         img_dir='cifar100/train',
-        ann_dir='annotations/training',
+        ann_dir='annotations/train',
+        split='cifar100/splits/train.txt',
         pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
         data_root=data_root,
         img_dir='cifar100/test',
-        ann_dir='annotations/validation',
+        ann_dir='annotations/test',
+        split='cifar100/splits/test.txt',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
         data_root=data_root,
-        img_dir='cifar100/test',
-        ann_dir='annotations/test',
+        img_dir='cifar100/train',
+        ann_dir='annotations/train',
+        split='cifar100/splits/train.txt',
+        # img_dir='cifar100/test',
+        # ann_dir='annotations/test',
+        # split='cifar100/splits/test.txt',
         pipeline=test_pipeline))
 
 

@@ -13,6 +13,7 @@ import warnings
 
 import mmcv
 import torch
+import numpy as np
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import (get_dist_info, init_dist, load_checkpoint,
                          wrap_fp16_model, load_state_dict)
@@ -267,7 +268,9 @@ def main():
             format_only=args.format_only or eval_on_format_results,
             format_args=eval_kwargs)
 
-    print(f":: Log :: Results *** {results}\n")
+    print(f":: Log :: Results *** {np.array(results).shape}\n")
+    save_results(cfg.data.test, results, "result.txt")
+
 
     rank, _ = get_dist_info()
     if rank == 0:
@@ -287,6 +290,32 @@ def main():
             if tmpdir is not None and eval_on_format_results:
                 # remove tmp dir when cityscapes evaluation
                 shutil.rmtree(tmpdir)
+    if args.eval:
+        with open("D:/datasets/cifar/cifar100/metric.txt", "w+") as f:
+            f.write(str(metric))
+
+
+def save_results(cfg_test, results, suffix=""):
+    dataset_dir = "D:/datasets/cifar"
+    split_dir = cfg_test.split
+    img_dir = cfg_test.img_dir
+    with open(os.path.join(dataset_dir, split_dir), "r") as f:
+        names = f.readlines()
+
+    print(f":: Log :: names - {np.array(names).shape}({np.array(names).size}) / "
+          f"results - {np.array(results).shape}({np.array(results).size})")
+    shape = np.array(results).shape
+    # assert np.array(names).size == np.array(results).size
+    for n, r in zip(names, results):
+        with open(os.path.join(dataset_dir, img_dir, n.strip() + "_" + suffix), "w+") as f:
+            if len(shape) > 1:
+                for c in r:
+                    f.write(str(c) + "\n")
+            else:
+                f.write(str(r) + "\n")
+
+
+
 
 
 if __name__ == '__main__':

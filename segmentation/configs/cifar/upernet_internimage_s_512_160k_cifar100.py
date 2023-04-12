@@ -7,7 +7,6 @@ _base_ = [
     '../_base_/models/upernet_r50.py', '../_base_/datasets/cifar100.py',
     '../_base_/default_runtime.py', '../_base_/schedules/schedule_160k.py'
 ]
-data_root = "D:/datasets/cifar/"
 pretrained = 'https://huggingface.co/OpenGVLab/InternImage/resolve/main/internimage_s_1k_224.pth'
 model = dict(
     backbone=dict(
@@ -31,22 +30,6 @@ model = dict(
 )
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
-test_pipeline = [
-    dict(type='LoadImageFromFile'),
-    dict(
-        type='MultiScaleFlipAug',
-        img_scale=(520, 520),
-        # img_ratios=[0.5, 0.75, 1.0, 1.25, 1.5, 1.75],
-        flip=False,
-        transforms=[
-            dict(type='Resize', keep_ratio=True),
-            # dict(type='ResizeToMultiple', size_divisor=32),
-            dict(type='RandomFlip'),
-            dict(type='Normalize', **img_norm_cfg),
-            dict(type='ImageToTensor', keys=['img']),
-            dict(type='Collect', keys=['img']),
-        ])
-]
 optimizer = dict(
     _delete_=True, type='AdamW', lr=0.00006, betas=(0.9, 0.999), weight_decay=0.05,
     constructor='CustomLayerDecayOptimizerConstructor',
@@ -58,20 +41,6 @@ lr_config = dict(_delete_=True, policy='poly',
                  warmup_ratio=1e-6,
                  power=1.0, min_lr=0.0, by_epoch=False)
 # By default, models are trained on 8 GPUs with 2 images per GPU
-data=dict(samples_per_gpu=1,
-          val=dict(
-              pipeline=test_pipeline,
-              data_root=data_root,
-              # img_dir='test',
-              # ann_dir='SegmentationClassContext',
-              # split='D:\datasets\cifar\cifar100\splits/test.txt'.replace("\\", "/"),
-          ),
-          test=dict(
-              pipeline=test_pipeline,
-              data_root=data_root,
-              # img_dir='test',
-              # split='D:\datasets\cifar\cifar100\splits/test.txt'.replace("\\", "/"),
-          ))
 runner = dict(type='IterBasedRunner')
 checkpoint_config = dict(by_epoch=False, interval=1000, max_keep_ckpts=1)
 evaluation = dict(interval=16000, metric='mIoU', save_best='mIoU')
